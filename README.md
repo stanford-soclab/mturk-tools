@@ -1,7 +1,7 @@
 mturk-tools
 ===========
 
-Some scripts to perform various tasks on Amazon Mechanical Turk, written for Stanford's Laboratory for Social Research (https://lsr.stanford.edu/). Calls the MTurk API through https://github.com/ctrlcctrlv/mturk-python.
+Some scripts to perform various tasks on Amazon Mechanical Turk, written for Stanford's Laboratory for Social Research (https://lsr.stanford.edu/). Calls the MTurk API through https://github.com/ctrlcctrlv/mturk-python. (Code from there is in the `mturk/` directory.)
 
 ### General info
 
