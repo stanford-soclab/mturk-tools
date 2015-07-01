@@ -54,6 +54,7 @@ So if you wanted to only recontact workers with qualification XYZ with values 2 
 ```
 python recontact_workers.py worker_list email XYZ 2-3
 ```
+If you call the script without the qualification arguments, then you will recontact all workers in the list provided, regardless of qualifications.
 
 #### Granting bonuses
 
