@@ -1,7 +1,9 @@
-from mturk.mturk import MechanicalTurk
+import mturk
 import sys
 import re
-
+#TODOs:
+#1. see if this still works in windows (and probably get xmltodict on lab's windows machines)
+#2. set the secret key as an environment variable (rather than as something in a text file that gets passed around everywhere)
 def load_email(message_file):
 	with open(message_file) as f:
 		lines = f.readlines()
@@ -37,25 +39,31 @@ def meets_qualification(qual, qualified_vals, curr_worker):
 	return False
 
 def recontact_workers(worker_list, qualification_id, qualified_vals, message):
-	m = MechanicalTurk()
+	m = mturk.MechanicalTurk()
 	with open(worker_list,'rb') as f:
 		for line in f:
 			curr_worker = re.sub(r'(\r\n|\r|\n)', '\n', line).strip()
-			qual = m.request("GetQualificationScore",
-								{"QualificationTypeId":qualification_id,
-								 "SubjectId":curr_worker})
-			if (meets_qualification(qual, qualified_vals, curr_worker)):
+			if qualification_id is None:
 				contact_worker(curr_worker, message, m)
+			else:
+				qual = m.request("GetQualificationScore",
+									{"QualificationTypeId":qualification_id,
+									 "SubjectId":curr_worker})
+				if (meets_qualification(qual, qualified_vals, curr_worker)):
+					contact_worker(curr_worker, message, m)
 
 def main():
 	worker_list = sys.argv[1]
 	message = sys.argv[2]
-	qualification_id = sys.argv[3]
-	if (len(sys.argv) > 4):
-		qualified_vals = [int(x) for x in sys.argv[4].split("-")]
+	if len(sys.argv) == 3:
+		recontact_workers(worker_list, qualification_id=None, qualified_vals=-1, message=message)
 	else:
-		qualified_vals = -1
-	recontact_workers(worker_list, qualification_id, qualified_vals, message)	
+		qualification_id = sys.argv[3]
+		if (len(sys.argv) > 4):
+			qualified_vals = [int(x) for x in sys.argv[4].split("-")]
+		else:
+			qualified_vals = -1
+		recontact_workers(worker_list, qualification_id, qualified_vals, message)	
 
 
 if __name__ == "__main__":
